@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Lock, Building2 } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginForm() {
@@ -20,7 +20,11 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-emerald-900">
       <div className="flex flex-col items-center mb-8">
-        <Building2 className="h-16 w-16 text-white mb-4" />
+        <img 
+          src="https://lh3.googleusercontent.com/pw/AP1GczMhXzcJpf2OZViNSwr5Ha6gx4e0GsahLMuI5IZq2ag99k0nXqMMU3oAROsSDA9srszqkDAPj8j9Xh4xNDmP4VnTnNLOnDF9fu5QDgULSe9awKaFe4glI7Hr1K1As4fnWDrqWG-O_KKOaZWbtQ3zq7sE=w936-h936-s-no-gm?authuser=0"
+          alt="Servicios Integrales"
+          className="w-24 h-24 mb-4 rounded-full"
+        />
         <h1 className="text-3xl font-bold text-white mb-2">Servicios Integrales</h1>
         <div className="h-1 w-32 bg-emerald-500 rounded"></div>
       </div>
