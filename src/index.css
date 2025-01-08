@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #065f46;
+  --secondary: #059669;
+}
+
+body {
+  @apply bg-emerald-50;
+}
+
+.btn-primary {
+  @apply bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition-colors;
+}
+
+.input-primary {
+  @apply w-full p-2 border border-emerald-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500;
+}
+
+.card {
+  @apply bg-white p-6 rounded-lg shadow-md;
+}
