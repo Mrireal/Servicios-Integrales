@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm';
 import ServiceForm from './components/ServiceForm';
 import ClientList from './components/ClientList';
 import Calendar from './components/Calendar';
+import Finances from './components/Finances';
 import { useAuth } from './contexts/AuthContext';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -47,6 +48,14 @@ function AppContent() {
             element={
               <PrivateRoute>
                 <Calendar />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/finances"
+            element={
+              <PrivateRoute>
+                <Finances />
               </PrivateRoute>
             }
           />

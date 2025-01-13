@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { User, Calendar, DollarSign, LogOut } from 'lucide-react';
+import { User, Calendar, DollarSign, LogOut, PieChart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
@@ -35,6 +35,13 @@ export default function Navbar() {
           >
             <Calendar className="h-5 w-5" />
             <span>Calendario</span>
+          </Link>
+          <Link 
+            to="/finances" 
+            className="flex items-center space-x-1 hover:text-emerald-200"
+          >
+            <PieChart className="h-5 w-5" />
+            <span>Finanzas</span>
           </Link>
           <Link 
             to="/services" 
