@@ -10,7 +10,6 @@ interface ClientSummary {
   totalServices: number;
   totalAmount: number;
   services: Array<{
-    id: string;
     service_date: string;
     description: string;
     amount: number;
@@ -89,7 +88,6 @@ export default function ClientList() {
         client.totalServices += 1;
         client.totalAmount += service.amount;
         client.services.push({
-          id: service.id,
           service_date: service.service_date,
           description: service.description,
           amount: service.amount,
@@ -138,45 +136,6 @@ export default function ClientList() {
       loadClients(); // Reload to update totals
     } catch (err) {
       setError('Error al eliminar el cliente');
-    }
-  };
-
-  const handleDeleteService = async (serviceId: string) => {
-    if (!confirm('¿Está seguro de eliminar este servicio? Esta acción no se puede deshacer.')) {
-      return;
-    }
-
-    try {
-      const { error: serviceError } = await supabase
-        .from('services')
-        .delete()
-        .eq('id', serviceId);
-
-      if (serviceError) throw serviceError;
-
-      // Update the local state
-      if (selectedClient) {
-        const updatedServices = selectedClient.services.filter(service => service.id !== serviceId);
-        const updatedTotalAmount = updatedServices.reduce((sum, service) => sum + service.amount, 0);
-        
-        const updatedClient = {
-          ...selectedClient,
-          services: updatedServices,
-          totalServices: updatedServices.length,
-          totalAmount: updatedTotalAmount
-        };
-
-        setSelectedClient(updatedClient);
-        setClients(prevClients => 
-          prevClients.map(client => 
-            client.id === selectedClient.id ? updatedClient : client
-          )
-        );
-      }
-
-      loadClients(); // Reload to update totals
-    } catch (err) {
-      setError('Error al eliminar el servicio');
     }
   };
 
@@ -232,37 +191,28 @@ export default function ClientList() {
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4">Historial de Servicios</h3>
             <div className="space-y-4">
-              {selectedClient.services.map((service) => (
-                <div key={service.id} className="bg-emerald-50 p-4 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div className="grid grid-cols-2 gap-4 flex-grow">
-                      <div>
-                        <p className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          <span className="font-medium">Fecha:</span>
-                          {service.service_date}
-                        </p>
-                        <p className="flex items-center gap-2 mt-2">
-                          <MapPin className="h-4 w-4" />
-                          <span className="font-medium">Ubicación:</span>
-                          {service.location}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4" />
-                          <span className="font-medium">Monto:</span>
-                          ${service.amount.toLocaleString()}
-                        </p>
-                      </div>
+              {selectedClient.services.map((service, index) => (
+                <div key={index} className="bg-emerald-50 p-4 rounded-lg">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span className="font-medium">Fecha:</span>
+                        {service.service_date}
+                      </p>
+                      <p className="flex items-center gap-2 mt-2">
+                        <MapPin className="h-4 w-4" />
+                        <span className="font-medium">Ubicación:</span>
+                        {service.location}
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleDeleteService(service.id)}
-                      className="text-red-600 hover:text-red-800 p-1"
-                      title="Eliminar servicio"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
+                    <div>
+                      <p className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4" />
+                        <span className="font-medium">Monto:</span>
+                        ${service.amount.toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                   <p className="mt-3">
                     <span className="font-medium">Descripción:</span>
