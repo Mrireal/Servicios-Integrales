@@ -10,6 +10,7 @@ interface ClientSummary {
   totalServices: number;
   totalAmount: number;
   services: Array<{
+    id: string;
     service_date: string;
     description: string;
     amount: number;
@@ -88,6 +89,7 @@ export default function ClientList() {
         client.totalServices += 1;
         client.totalAmount += service.amount;
         client.services.push({
+          id: service.id,
           service_date: service.service_date,
           description: service.description,
           amount: service.amount,
@@ -136,6 +138,47 @@ export default function ClientList() {
       loadClients(); // Reload to update totals
     } catch (err) {
       setError('Error al eliminar el cliente');
+    }
+  };
+
+  const handleDeleteService = async (serviceId: string) => {
+    if (!confirm('¿Está seguro de eliminar este servicio? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('services')
+        .delete()
+        .eq('id', serviceId);
+
+      if (error) throw error;
+
+      // Update the local state
+      if (selectedClient) {
+        const updatedServices = selectedClient.services.filter(service => service.id !== serviceId);
+        const updatedTotalAmount = updatedServices.reduce((sum, service) => sum + service.amount, 0);
+        
+        const updatedClient = {
+          ...selectedClient,
+          services: updatedServices,
+          totalServices: updatedServices.length,
+          totalAmount: updatedTotalAmount
+        };
+
+        setSelectedClient(updatedClient);
+        
+        // Update the clients list
+        setClients(prevClients => 
+          prevClients.map(client => 
+            client.id === selectedClient.id ? updatedClient : client
+          )
+        );
+      }
+
+      loadClients(); // Reload to update totals
+    } catch (err) {
+      setError('Error al eliminar el servicio');
     }
   };
 
@@ -191,8 +234,15 @@ export default function ClientList() {
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4">Historial de Servicios</h3>
             <div className="space-y-4">
-              {selectedClient.services.map((service, index) => (
-                <div key={index} className="bg-emerald-50 p-4 rounded-lg">
+              {selectedClient.services.map((service) => (
+                <div key={service.id} className="bg-emerald-50 p-4 rounded-lg relative">
+                  <button
+                    onClick={() => handleDeleteService(service.id)}
+                    className="absolute top-4 right-4 text-red-600 hover:text-red-800"
+                    title="Eliminar servicio"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="flex items-center gap-2">
