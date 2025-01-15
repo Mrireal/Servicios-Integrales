@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { ChevronLeft, ChevronRight, SkipBack, ArrowRight, X, Save, DollarSign } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SkipBack, ArrowRight, X, Save, DollarSign, StickyNote } from 'lucide-react';
 import MonthSummary from './MonthSummary';
 
 interface ServiceEvent {
@@ -323,14 +323,22 @@ export default function Calendar() {
                   <button
                     key={event.id}
                     onClick={() => setSelectedEvent(event)}
-                    className={`w-full text-left text-xs p-1 mb-1 rounded hover:bg-opacity-80 transition-colors ${
+                    className={`w-full text-left text-xs p-1 mb-1 rounded hover:bg-opacity-80 transition-colors relative ${
                       event.is_paid ? 'bg-emerald-200' : 'bg-red-200'
                     }`}
-                    title={`${event.client_name} - ${event.description}\nMonto: $${event.amount}\nEstado: ${event.is_paid ? 'Pagado' : 'Pendiente'}`}
+                    title={`${event.client_name} - ${event.description}\nMonto: $${event.amount}\nEstado: ${event.is_paid ? 'Pagado' : 'Pendiente'}${event.notes ? '\nNota: ' + event.notes : ''}`}
                   >
                     <div className="flex justify-between items-center">
-                      <span>{event.client_name}</span>
-                      <DollarSign className={`h-3 w-3 ${event.is_paid ? 'text-emerald-700' : 'text-red-700'}`} />
+                      <span className="truncate">{event.client_name}</span>
+                      <div className="flex items-center gap-1">
+                        {event.notes && (
+                          <div className="relative">
+                            <StickyNote className="h-3 w-3 text-gray-600" />
+                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                          </div>
+                        )}
+                        <DollarSign className={`h-3 w-3 ${event.is_paid ? 'text-emerald-700' : 'text-red-700'}`} />
+                      </div>
                     </div>
                   </button>
                 ))}
